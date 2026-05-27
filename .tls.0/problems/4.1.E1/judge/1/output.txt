@@ -1,0 +1,2 @@
+input the price of apple: Input the numper of apples: Input the price of peach: Input the number of peaches: ---
+4200

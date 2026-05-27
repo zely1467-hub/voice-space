@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Space - Multilingual Edition</title>
+    <style>
+    .background-text {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* 最背面へ */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.05; /* かなり薄くして背景に馴染ませる */
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #d4af37; /* ゴールド */
+}
+
+.bg-word {
+    padding: 10px;
+    font-size: 1.2rem; /* 少し小さくして名言が収まりやすくする */
+    letter-spacing: 0.2rem; /* 文字間を広げると高級感が出ます */
+    transform: rotate(0deg); /* 読みやすくするために回転を戻すのも手です */
+    transition: opacity 0.5s ease; /* 切り替わりを滑らかに */
+}
+        /* 画面の四隅に飾る金色のライン */
+    .deco-corner {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border: 2px solid rgba(212, 175, 55, 0.4); /* ゴールドの薄い色 */
+        pointer-events: none;
+        animation: pulse-deco 4s infinite ease-in-out;
+    }
+
+    .top-left { top: 40px; left: 40px; border-right: none; border-bottom: none; }
+    .top-right { top: 40px; right: 40px; border-left: none; border-bottom: none; }
+    .bottom-left { bottom: 40px; left: 40px; border-right: none; border-top: none; }
+    .bottom-right { bottom: 40px; right: 40px; border-left: none; border-top: none; }
+
+    @keyframes pulse-deco {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.05); }
+    }
+        :root {
+            --accent-color: #007aff; 
+            --accent-glow: rgba(0, 122, 255, 0.4);
+            --bg-color: rgb(0, 0, 0);     
+            --main-text-color: #f5f5f7; 
+            --sub-text-color: #86868b;  
+            --panel-bg: rgba(28, 28, 30, 0.45); 
+            --border-color: rgba(255, 255, 255, 0.12); 
+            --segment-bg: rgba(116, 116, 128, 0.18);
+            --controller-bg: rgba(255, 255, 255, 0.04);
+            --controller-border: rgba(255, 255, 255, 0.06);
+            --mic-btn-bg: rgba(255, 255, 255, 0.04);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --main-text-rgb: 255, 255, 255;
+        }
+
+        body {
+            
+            background: var(--bg-color);
+            color: var(--main-text-color); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background 0.3s ease-out;
+        }
+        
+        /* 右上のRGBコントローラー */
+        .rgb-controller {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: var(--controller-bg);
+            padding: 16px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--controller-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 200px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        /* 右上の言語切り替えトグル */
+        .lang-controller {
+            position: absolute;
+            top: 24px;
+            right: 280px; 
+            z-index: 10;
+        }
+
+        .lang-btn {
+            background: var(--controller-bg);
+            border: 1px solid var(--controller-border);
+            color: var(--main-text-color);
+            padding: 10px 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .lang-btn:hover {
+            transform: scale(1.03);
+            background: rgba(var(--main-text-rgb), 0.08);
+        }
+
+        .rgb-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--sub-text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .rgb-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rgb-label {
+            font-size: 12px;
+            font-weight: 700;
+            width: 12px;
+        }
+        .label-r { color: #ff453a; } 
+        .label-g { color: #32d74b; } 
+        .label-b { color: #0a84ff; } 
+
+        .rgb-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(var(--main-text-rgb), 0.1);
+            outline: none;
+        }
+
+        .rgb-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--main-text-color);
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            transition: transform 0.1s ease;
+        }
+
+        .rgb-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .rgb-value {
+            font-size: 11px;
+            font-family: monospace;
+            color: var(--sub-text-color);
+            width: 24px;
+            text-align: right;
+        }
+
+        /* 左上の設定ボタンとAPIキー入力エリア */
+        .settings-container {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .settings-toggle {
+            background: var(--controller-bg);
+            border: 1px solid var(--controller-border);
+            color: var(--main-text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .settings-toggle:hover {
+            transform: scale(1.05);
+            background: rgba(var(--main-text-rgb), 0.08);
+        }
+
+        .key-panel {
+            background: var(--controller-bg);
+            border: 1px solid var(--controller-border);
+            padding: 14px;
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 260px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .key-panel.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .key-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--sub-text-color);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .key-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: var(--main-text-color);
+            font-size: 12px;
+            outline: none;
+            box-sizing: border-box;
+            font-family: monospace;
+            transition: border-color 0.2s ease;
+        }
+
+        .key-input:focus {
+            border-color: var(--accent-color);
+        }
+
+        /* 中央コンテナ */
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 580px; 
+            padding: 40px;
+            background: var(--panel-bg);
+            border-radius: 24px; 
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(30px) saturate(210%); 
+            -webkit-backdrop-filter: blur(30px) saturate(210%);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease; 
+            box-sizing: border-box;
+        }
+
+        .container.ai-thinking {
+            transform: scale(1.015);
+            background: rgba(var(--main-text-rgb), 0.08);
+            border-color: rgba(var(--main-text-rgb), 0.2);
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600; 
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
+            color: var(--main-text-color);
+        }
+
+        p {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--sub-text-color); 
+            margin: 0 0 32px 0;
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            margin-bottom: 20px;
+            background: var(--segment-bg);
+            padding: 3px;
+            border-radius: 12px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            background: transparent;
+            color: var(--main-text-color);
+            border: none;
+            padding: 8px 0;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            opacity: 0.7;
+            white-space: nowrap;
+        }
+
+        .mode-btn.active {
+            background: rgba(var(--main-text-rgb), 0.12);
+            color: var(--main-text-color);
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            opacity: 1;
+        }
+
+        .custom-input-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-bottom: 0;
+        }
+
+        .custom-input-container.show {
+            max-height: 60px;
+            opacity: 1;
+            margin-bottom: 30px;
+        }
+
+        .custom-topic-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--main-text-color);
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .custom-topic-input:focus {
+            border-color: var(--accent-color);
+            background: rgba(var(--main-text-rgb), 0.02);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .action-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 32px;
+        }
+
+        .mic-btn {
+            background: var(--mic-btn-bg);
+            color: var(--main-text-color);
+            border: 1px solid var(--border-color);
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+        }
+
+        .mic-btn:hover {
+            background: rgba(var(--main-text-rgb), 0.08);
+            border-color: rgba(var(--main-text-rgb), 0.2);
+        }
+
+        .mic-btn.connected {
+            background: var(--accent-color);
+            color: #ffffff; 
+            border-color: transparent;
+            animation: apple-pulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes apple-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.5); }
+            70% { box-shadow: 0 0 0 16px rgba(0, 122, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
+        }
+
+        .status {
+            font-size: 13px;
+            color: var(--sub-text-color);
+            min-height: 40px;
+            line-height: 1.5;
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <div class="deco-corner top-left"></div>
+    ...
+<div class="settings-container">
+    <button class="settings-toggle" onclick="toggleKeyPanel()">⚙️</button>
+    <div id="key-panel" class="key-panel">
+        <div id="key-title-text" class="key-title">OpenAI API Key</div>
+        <input type="password" id="api-key-input" class="key-input" placeholder="sk-proj-..." onchange="saveKey()">
+    </div>
+</div>
+
+<div class="lang-controller">
+    <button id="lang-toggle-btn" class="lang-btn" onclick="toggleLanguage()">🌐 English</button>
+</div>
+
+<div class="rgb-controller">
+    <div class="rgb-title">Background RGB</div>
+    <div class="rgb-row">
+        <span class="rgb-label label-r">R</span>
+        <input type="range" id="range-r" class="rgb-slider" min="0" max="255" value="0" oninput="updateRGB()">
+        <span id="val-r" class="rgb-value">0</span>
+    </div>
+    <div class="rgb-row">
+        <span class="rgb-label label-g">G</span>
+        <input type="range" id="range-g" class="rgb-slider" min="0" max="255" value="0" oninput="updateRGB()">
+        <span id="val-g" class="rgb-value">0</span>
+    </div>
+    <div class="rgb-row">
+        <span class="rgb-label label-b">B</span>
+        <input type="range" id="range-b" class="rgb-slider" min="0" max="255" value="0" oninput="updateRGB()">
+        <span id="val-b" class="rgb-value">0</span>
+    </div>
+</div>
+
+<div class="container">
+    <h2 id="main-title">Voice Space</h2>
+    <p id="sub-title">Realtime Interactive Session</p>
+
+<div class="mode-selector">
+    <button id="btn-interview" class="mode-btn active" onclick="changeMode('interview', event)">面接練習</button>
+    <button id="btn-english" class="mode-btn" onclick="changeMode('english', event)">英会話</button>
+    <button id="btn-philosophy" class="mode-btn" onclick="changeMode('philosophy', event)">哲学対話</button>
+    <button id="btn-chat" class="mode-btn" onclick="changeMode('chat', event)">雑談</button>
+    <button id="btn-custom" class="mode-btn" onclick="changeMode('custom', event)">✨ 自由入力</button>
+</div>
+
+    <div id="custom-input-area" class="custom-input-container">
+        <input type="text" id="custom-topic-input" class="custom-topic-input" placeholder="話したいテーマを入力してください">
+    </div>
+
+    <div class="action-container">
+        <button id="connect-btn" class="mic-btn">接続</button>
+    </div>
+    
+    <div class="status" id="status-text">開始するには左上の⚙️からAPIキーを入力してください</div>
+</div>
+
+<script>
+const TRANSLATIONS = {
+        ja: {
+            langBtn: "🌐 English",
+            inputKey: "開始するには左上の⚙️からAPIキーを入力してください",
+            inputKeyReady: "開始するには「接続」ボタンをタップしてください",
+            keySetSuccess: "キーが設定されました。「接続」できます。",
+            connecting: "接続中...",
+            connected: "接続完了。話しかけてください。",
+            disconnected: "切断されました。",
+            connError: "接続エラー。キーが正しいか確認してください。",
+            connectBtn: "接続",
+            disconnectBtn: "切断",
+            customPlaceholder: "話したいテーマを入力してください",
+            modes: { interview: "面接練習", english: "英会話", philosophy: "哲学対話", chat: "雑談", custom: "✨ 自由入力" }
+        },
+        en: {
+            langBtn: "🌐 Русский",
+            inputKey: "Please enter your OpenAI API key from the ⚙️ icon on the top left.",
+            inputKeyReady: "Tap the 'Connect' button to start the session.",
+            keySetSuccess: "Key configured successfully. Ready to 'Connect'.",
+            connecting: "Connecting...",
+            connected: "Connected. Start speaking now.",
+            disconnected: "Disconnected.",
+            connError: "Connection error. Please check your API key.",
+            connectBtn: "Connect",
+            disconnectBtn: "Disconnect",
+            customPlaceholder: "Enter custom topic here",
+            modes: { interview: "Mock Interview", english: "English Talk", philosophy: "Philosophy", chat: "Casual Chat", custom: "✨ Custom" }
+        },
+        ru: {
+            langBtn: "🌐 日本語",
+            inputKey: "Пожалуйста, введите ваш OpenAI API key, нажав на ⚙️ в левом верхнем углу.",
+            inputKeyReady: "Нажмите кнопку «Подключить», чтобы начать сессию.",
+            keySetSuccess: "Ключ успешно настроен. Готово к подключению.",
+            connecting: "Подключение...",
+            connected: "Подключено. Можете говорить.",
+            disconnected: "Отключено.",
+            connError: "Ошибка подключения. Проверьте ваш API-ключ.",
+            connectBtn: "Подключить",
+            disconnectBtn: "Отключить",
+            customPlaceholder: "Введите тему для обсуждения",
+            modes: { interview: "Интервью", english: "Английский", philosophy: "Философия", chat: "Болтовня", custom: "✨ Свой выбор" }
+        }
+    };
+
+    const PROMPTS = {
+    interview: {
+        ja: "あなたは厳格な面接官です。私のキャリアや目標について鋭い質問を1問ずつ投げかけ、面接練習を行ってください。",
+        en: "You are a professional interviewer. Ask me one sharp question at a time about my career or goals to conduct a mock interview.",
+        ru: "Вы строгий интервьюер. Проведите тренировочное интервью, задавая по одному острому вопросу о моей карьере или целях."
+    },
+    english: {
+        ja: "あなたはネイティブスピーカーの友人です。日常会話を英語で行いましょう。文法を気にするよりも、会話のテンポを重視して返答してください。",
+        en: "You are my native English-speaking friend. Let's have a casual conversation in English. Prioritize flow and natural tempo over perfect grammar.",
+        ru: "Вы мой англоговорящий друг. Давайте пообщаемся на английском. Не зацикливайтесь на грамматике, главное — поддерживайте темп речи."
+    },
+    philosophy: {
+        ja: "あなたは哲学の専門家です。提示されたテーマについて、ソクラテス式対話法を用いて、本質に迫る問いかけをしてください。",
+        en: "You are a philosophy expert. Use the Socratic method to ask questions that help me explore the essence of the topic.",
+        ru: "Вы философ. Используйте сократический метод, чтобы задавать вопросы, помогающие мне добраться до сути темы."
+    },
+    chat: {
+        ja: "あなたは親しみやすい対話相手です。テーマを決めず、日常の何気ない話題についてリラックスして雑談しましょう。",
+        en: "You are a friendly conversation partner. Let's have a relaxed, casual chat about daily life without a specific agenda.",
+        ru: "Вы дружелюбный собеседник. Давайте просто поболтаем о чем угодно в расслабленном стиле."
+    }
+};
+
+    const MODE_COLORS = {
+        ui: { color: '#007aff', glow: 'rgba(0, 122, 255, 0.4)' },       
+        interview: { color: '#34c759', glow: 'rgba(52, 199, 89, 0.4)' }, 
+        essay: { color: '#5856d6', glow: 'rgba(88, 86, 214, 0.4)' },     
+        english: { color: '#af52de', glow: 'rgba(175, 82, 222, 0.4)' },
+        custom: { color: '#ff9500', glow: 'rgba(255, 149, 0, 0.4)' }
+    };
+
+    let currentLang = 'ja'; 
+    let currentMode = 'ui';
+    let ws;
+    let audioContext;
+    let mediaStream;
+    let isConnected = false;
+
+    const connectBtn = document.getElementById('connect-btn');
+    const statusText = document.getElementById('status-text');
+    const keyInput = document.getElementById('api-key-input');
+    const customInputArea = document.getElementById('custom-input-area');
+    const customTopicInput = document.getElementById('custom-topic-input');
+    const langToggleBtn = document.getElementById('lang-toggle-btn');
+
+    window.onload = () => {
+        const savedKey = localStorage.getItem('voice_space_api_key');
+        if (savedKey) {
+            keyInput.value = savedKey;
+            statusText.innerText = TRANSLATIONS[currentLang].inputKeyReady;
+        }
+        applyLanguageUI();
+        updateRGB(); // DOM読み込み後に安全に初期色を反映
+    };
+
+    function toggleLanguage() {
+        if (currentLang === 'ja') {
+            currentLang = 'en';
+        } else if (currentLang === 'en') {
+            currentLang = 'ru';
+        } else {
+            currentLang = 'ja';
+        }
+        applyLanguageUI();
+        if (isConnected && ws && ws.readyState === WebSocket.OPEN) { updateSession(); }
+    }
+
+    function applyLanguageUI() {
+        const t = TRANSLATIONS[currentLang];
+        langToggleBtn.innerText = t.langBtn;
+        
+        if (!keyInput.value) {
+            statusText.innerText = t.inputKey;
+        } else if (!isConnected) {
+            statusText.innerText = t.inputKeyReady;
+        } else {
+            statusText.innerText = t.connected;
+        }
+
+        connectBtn.innerText = isConnected ? t.disconnectBtn : t.connectBtn;
+        customTopicInput.placeholder = t.customPlaceholder;
+
+        // IDをHTMLの定義と一致させます
+        document.getElementById('btn-interview').innerText = t.modes.interview;
+        document.getElementById('btn-english').innerText = t.modes.english;
+        document.getElementById('btn-philosophy').innerText = t.modes.philosophy;
+        document.getElementById('btn-chat').innerText = t.modes.chat;
+        document.getElementById('btn-custom').innerText = t.modes.custom;
+    }
+    function toggleKeyPanel() {
+        document.getElementById('key-panel').classList.toggle('show');
+    }
+
+    function saveKey() {
+        localStorage.setItem('voice_space_api_key', keyInput.value);
+        if(keyInput.value) {
+            statusText.innerText = TRANSLATIONS[currentLang].keySetSuccess;
+        }
+    }
+
+    function updateRGB() {
+        const r = document.getElementById('range-r').value;
+        const g = document.getElementById('range-g').value;
+        const b = document.getElementById('range-b').value;
+
+        document.getElementById('val-r').innerText = r;
+        document.getElementById('val-g').innerText = g;
+        document.getElementById('val-b').innerText = b;
+
+        document.documentElement.style.setProperty('--bg-color', `rgb(${r}, ${g}, ${b})`);
+        const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+
+        if (brightness > 170) { enableLightMode(); } else { enableDarkMode(); }
+    }
+
+    function enableLightMode() {
+        document.documentElement.style.setProperty('--main-text-color', '#1d1d1f'); 
+        document.documentElement.style.setProperty('--sub-text-color', '#6e6e73');  
+        document.documentElement.style.setProperty('--panel-bg', 'rgba(255, 255, 255, 0.6)'); 
+        document.documentElement.style.setProperty('--border-color', 'rgba(0, 0, 0, 0.08)'); 
+        document.documentElement.style.setProperty('--segment-bg', 'rgba(118, 118, 128, 0.12)');
+        document.documentElement.style.setProperty('--controller-bg', 'rgba(255, 255, 255, 0.8)');
+        document.documentElement.style.setProperty('--controller-border', 'rgba(0, 0, 0, 0.08)');
+        document.documentElement.style.setProperty('--mic-btn-bg', 'rgba(0, 0, 0, 0.02)');
+        document.documentElement.style.setProperty('--input-bg', 'rgba(0, 0, 0, 0.03)');
+        document.documentElement.style.setProperty('--main-text-rgb', '0, 0, 0'); 
+    }
+
+    function enableDarkMode() {
+        document.documentElement.style.setProperty('--main-text-color', '#f5f5f7'); 
+        document.documentElement.style.setProperty('--sub-text-color', '#86868b');  
+        document.documentElement.style.setProperty('--panel-bg', 'rgba(28, 28, 30, 0.45)'); 
+        document.documentElement.style.setProperty('--border-color', 'rgba(255, 255, 255, 0.12)'); 
+        document.documentElement.style.setProperty('--segment-bg', 'rgba(116, 116, 128, 0.18)');
+        document.documentElement.style.setProperty('--controller-bg', 'rgba(255, 255, 255, 0.04)');
+        document.documentElement.style.setProperty('--controller-border', 'rgba(255, 255, 255, 0.06)');
+        document.documentElement.style.setProperty('--mic-btn-bg', 'rgba(255, 255, 255, 0.04)');
+        document.documentElement.style.setProperty('--input-bg', 'rgba(255, 255, 255, 0.05)');
+        document.documentElement.style.setProperty('--main-text-rgb', '255, 255, 255'); 
+    }
+
+    function changeMode(modeKey, event) {
+        currentMode = modeKey;
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // インラインイベントでも安全にターゲットをアクティブ化
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+        
+        if (modeKey === 'custom') {
+            customInputArea.classList.add('show');
+            customTopicInput.focus();
+        } else {
+            customInputArea.classList.remove('show');
+        }
+
+        const theme = MODE_COLORS[modeKey];
+        document.documentElement.style.setProperty('--accent-color', theme.color);
+        document.documentElement.style.setProperty('--accent-glow', theme.glow);
+        if (isConnected && ws && ws.readyState === WebSocket.OPEN) { updateSession(); }
+    }
+
+    connectBtn.addEventListener('click', async () => {
+        if (isConnected) { disconnect(); return; }
+        await initRealtimeSpeech();
+    });
+
+    async function initRealtimeSpeech() {
+        const apiKey = keyInput.value.trim();
+        if (!apiKey) {
+            statusText.innerText = TRANSLATIONS[currentLang].inputKey;
+            toggleKeyPanel();
+            return;
+        }
+
+        statusText.innerText = TRANSLATIONS[currentLang].connecting;
+        const url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01";
+        
+        ws = new WebSocket(url);
+        ws.binaryType = "arraybuffer";
+
+        ws.onopen = async () => {
+            isConnected = true;
+            connectBtn.classList.add('connected');
+            connectBtn.innerText = TRANSLATIONS[currentLang].disconnectBtn;
+            statusText.innerText = TRANSLATIONS[currentLang].connected;
+            updateSession();
+            await startAudioRecording();
+        };
+
+        ws.onmessage = (event) => {
+            const response = JSON.parse(event.data);
+            if (response.type === "response.audio.delta") {
+                playAudioDelta(response.delta);
+                document.querySelector('.container').classList.add('ai-thinking');
+            }
+            if (response.type === "response.audio_transcript.delta") {
+                statusText.innerText = `AI: ${response.delta}`;
+            }
+        };
+
+        ws.onerror = (err) => {
+            statusText.innerText = TRANSLATIONS[currentLang].connError;
+            disconnect();
+        };
+        ws.onclose = () => { disconnect(); };
+    }
+
+    function updateSession() {
+        let instructions = "";
+        
+        if (currentMode === 'custom') {
+            const topic = customTopicInput.value.trim() || "any interesting topic";
+            if (currentLang === 'ja') {
+                instructions = `あなたは親しみやすい対話相手、またはその分野の専門家です。テーマは「${topic}」です。日本語で話します。音声での会話なので、1文か2文でテンポよく、相槌を打ちながら返答してください。`;
+            } else if (currentLang === 'en') {
+                instructions = `You are a friendly conversation partner or an expert in the field. The topic is "${topic}". We will speak in English. Reply concisely in 1-2 sentences with natural nods.`;
+            } else if (currentLang === 'ru') {
+                instructions = `Вы дружелюбный собеседник или эксперт в этой области. Тема: "${topic}". Мы будем говорить на русском языке. Отвечайте коротко, в 1-2 предложениях, поддерживая естественный ритм беседы.`;
+            }
+        } else {
+            instructions = PROMPTS[currentMode][currentLang];
+        }
+
+        const sessionUpdate = {
+            type: "session.update",
+            session: {
+                modalities: ["audio", "text"],
+                instructions: instructions,
+                voice: "alloy",
+                input_audio_format: "pcm16",
+                output_audio_format: "pcm16",
+                turn_detection: { type: "server_vad" }
+            }
+        };
+        ws.send(JSON.stringify(sessionUpdate));
+    }
+
+    async function startAudioRecording() {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+    
+    // Workletの読み込み
+    await audioContext.audioWorklet.addModule('audio-processor.js');
+    
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const source = audioContext.createMediaStreamSource(mediaStream);
+    const workletNode = new AudioWorkletNode(audioContext, 'audio-processor');
+
+    workletNode.port.onmessage = (e) => {
+        if (!isConnected) return;
+        const inputData = e.data;
+        const pcm16 = new Int16Array(inputData.length);
+        for (let i = 0; i < inputData.length; i++) {
+            const s = Math.max(-1, Math.min(1, inputData[i]));
+            pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+        const base64Audio = btoa(String.fromCharCode(...new Uint8Array(pcm16.buffer)));
+        ws.send(JSON.stringify({ type: "input_audio_buffer.append", audio: base64Audio }));
+    };
+
+    source.connect(workletNode);
+    // Workletは出力に接続しなくてもメインスレッドにデータを送れます
+    workletNode.connect(audioContext.destination);
+}
+    let audioQueue = [];
+    let isPlaying = false;
+
+    function playAudioDelta(base64Audio) {
+        const binaryString = atob(base64Audio);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
+        const pcm16 = new Int16Array(bytes.buffer);
+        const float32 = new Float32Array(pcm16.length);
+        for (let i = 0; i < pcm16.length; i++) { float32[i] = pcm16[i] / 0x7FFF; }
+        
+        audioQueue.push(float32);
+        if (!isPlaying) { playNextInQueue(); }
+    }
+
+    function playNextInQueue() {
+        if (audioQueue.length === 0) {
+            isPlaying = false;
+            document.querySelector('.container').classList.remove('ai-thinking');
+            return;
+        }
+        isPlaying = true;
+        const data = audioQueue.shift();
+        const buffer = audioContext.createBuffer(1, data.length, 24000);
+        buffer.getChannelData(0).set(data);
+        const bufferSource = audioContext.createBufferSource();
+        bufferSource.buffer = buffer;
+        bufferSource.connect(audioContext.destination);
+        bufferSource.onended = () => { playNextInQueue(); };
+        bufferSource.start();
+    }
+
+    function disconnect() {
+        isConnected = false;
+        if (ws) ws.close();
+        if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
+        if (audioContext) audioContext.close();
+        connectBtn.classList.remove('connected');
+        connectBtn.innerText = TRANSLATIONS[currentLang].connectBtn;
+        statusText.innerText = TRANSLATIONS[currentLang].disconnected;
+        document.querySelector('.container').classList.remove('ai-thinking');
+    }
+
+</script>
+    <div class="deco-corner top-left"></div>
+    <div class="deco-corner top-right"></div>
+    <div class="deco-corner bottom-left"></div>
+    <div class="deco-corner bottom-right"></div>
+</body>
+</body>
+</html>

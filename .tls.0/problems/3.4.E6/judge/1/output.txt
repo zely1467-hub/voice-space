@@ -1,0 +1,5 @@
+Input the word: ---
+Ha
+HaHa
+HaHaHa
+

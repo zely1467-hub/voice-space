@@ -1,0 +1,2 @@
+Input the age of Alice: Input the age of Bob: ---
+7

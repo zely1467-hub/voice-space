@@ -1,0 +1,2 @@
+Input the 7 numeric characters: ---
+987-6543

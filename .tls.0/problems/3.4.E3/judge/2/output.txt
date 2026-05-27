@@ -1,0 +1,2 @@
+Input the price of an apple: Input the number of apples: Input the price of a peach: Input the number of peaches: ---
+1980.0000000000002

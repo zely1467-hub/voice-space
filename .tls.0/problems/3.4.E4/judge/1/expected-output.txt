@@ -1,0 +1,5 @@
+---
+Apples: 720 yen
+Peaches: 1100 yen
+===
+Total: 1820 yen

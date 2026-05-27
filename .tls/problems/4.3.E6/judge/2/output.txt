@@ -1,0 +1,2 @@
+Input the odd number string: ---
+c

@@ -1,0 +1,2 @@
+Input the number of eggs: Input the number of peoples: ---
+1

@@ -1,0 +1,6 @@
+[1] Input the name: [1] Input the price: [1] Input the number: [2] Input the name: [2] Input the price: [2] Input the number: ---
+Apples: 720 yen
+Peaches: 1100 yen
+===
+Total: 1820 yen
+

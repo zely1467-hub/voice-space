@@ -1,0 +1,6 @@
+[1] Input the name: [1] Input the price: [1] Input the number: [2] Input the name: [2] Input the price: [2] Input the number: ---
+Pizza: 1950 yen
+Fried Chicken: 720 yen
+===
+Total: 2670 yen
+
