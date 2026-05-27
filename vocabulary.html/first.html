@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lexis - Minimal Vocabulary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* スムーズな慣性スクロールと非表示のスクロールバー */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Apple風のスムーズなアニメーション */
+        .card-transition { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; }
+    </style>
+</head>
+<body class="bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 min-h-screen flex flex-col justify-between font-sans overflow-hidden antialiased transition-colors duration-300">
+
+    <header class="flex justify-between items-center px-6 pt-12 pb-4 z-10">
+        <h1 class="text-xl font-semibold tracking-tight">Lexis</h1>
+        <div class="flex items-space gap-4">
+            <button id="historyBtn" class="p-2 rounded-full hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-colors">
+                <i data-lucide="history" class="w-5 h-5"></i>
+            </button>
+            <button id="themeToggle" class="p-2 rounded-full hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-colors">
+                <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col justify-center items-center px-6 relative w-full touch-none select-none">
+        <div id="card" class="w-full max-w-sm aspect-[3/4] bg-white dark:bg-zinc-900 rounded-[28px] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] p-8 flex flex-col justify-between card-transition border border-zinc-100/50 dark:border-zinc-800/50">
+            
+            <div class="space-y-2">
+                <div class="flex justify-between items-start">
+                    <span id="wordIndex" class="text-xs font-medium text-zinc-400 tracking-wider">1 / 3</span>
+                    <span class="text-[10px] uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-full text-zinc-500">Swipe</span>
+                </div>
+                <h2 id="wordTitle" class="text-3xl font-bold tracking-tight pt-2">altruism</h2>
+                <p id="wordPhonetic" class="text-sm font-mono text-zinc-400 tracking-wide">/ˈæltruɪzəm/</p>
+                <p id="wordMeaning" class="text-base text-zinc-600 dark:text-zinc-300 pt-1">利他主義、利他心</p>
+            </div>
+
+            <div class="flex-1 flex flex-col justify-center my-6 overflow-y-auto no-scrollbar space-y-4">
+                <div class="space-y-2">
+                    <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Standard Example</p>
+                    <p id="wordExample" class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 italic">"Many people question the psychology behind pure altruism."</p>
+                </div>
+                
+                <div id="aiSection" class="space-y-2 hidden border-t border-zinc-100 dark:border-zinc-800 pt-3">
+                    <p class="text-xs font-semibold text-teal-500 dark:text-teal-400 uppercase tracking-wider flex items-center gap-1">
+                        <i data-lucide="sparkles" class="w-3 h-3"></i> AI-Generated Context
+                    </p>
+                    <p id="aiExample" class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 font-medium"></p>
+                </div>
+            </div>
+
+            <button id="aiBtn" class="w-full py-3.5 bg-zinc-900 dark:bg-white text-white dark:text-black rounded-xl font-medium text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform duration-100 shadow-sm">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span id="aiBtnText">AIに新しい例文を頼む</span>
+            </button>
+        </div>
+
+        <div id="dots" class="flex gap-1.5 mt-6"></div>
+    </main>
+
+    <footer class="text-center pb-8 pt-2">
+        <p class="text-[11px] text-zinc-400 font-medium">左右にスワイプして単語を切り替え</p>
+    </footer>
+
+    <div id="historySheet" class="fixed inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-20 hidden opacity-0 transition-opacity duration-300">
+        <div id="sheetContent" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white dark:bg-zinc-900 rounded-t-[28px] max-h-[80vh] flex flex-col translate-y-full transition-transform duration-300 cubic-bezier(0.16, 1, 0.3, 1)">
+            <div class="w-full flex justify-center py-3 cursor-pointer" id="closeHistory">
+                <div class="w-9 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full"></div>
+            </div>
+            <div class="px-6 pb-4 flex justify-between items-center">
+                <h3 class="text-lg font-bold tracking-tight">学習の履歴</h3>
+                <button id="clearHistory" class="text-xs text-zinc-400 hover:text-red-500 transition-colors">すべて消去</button>
+            </div>
+            <div id="historyList" class="flex-1 overflow-y-auto px-6 pb-12 space-y-3 no-scrollbar">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. データ定義 ---
+        const wordData = [
+            {
+                word: "altruism",
+                phonetic: "/ˈæltruɪzəm/",
+                meaning: "利他主義、利他心",
+                example: "Many people question the psychology behind pure altruism.",
+                aiPool: [
+                    "True altruism involves helping others without expecting any reward.",
+                    "The cooperative behavior of bees is a classic example of biological altruism.",
+                    "Acts of altruism can significantly improve overall community well-being."
+                ]
+            },
+            {
+                word: "aesthetic",
+                phonetic: "/ɛsˈθɛtɪk/",
+                meaning: "美的な、美学、美意識",
+                example: "The app's design reflects a clean, minimalist Apple-like aesthetic.",
+                aiPool: [
+                    "The modern café was designed with a strict industrial aesthetic.",
+                    "She created a cohesive visual aesthetic for her frontend portfolio.",
+                    "Minimalism prioritizes functional beauty over superficial aesthetic elements."
+                ]
+            },
+            {
+                word: "convergence",
+                phonetic: "/kənˈvɜːrdʒəns/",
+                meaning: "収束、集中、一体化",
+                example: "The convergence of AI and frontend design opens up endless creative possibilities.",
+                aiPool: [
+                    "Probability theory states that empirical results show convergence to the mean over time.",
+                    "The convergence of different art styles created a unique club dynamic.",
+                    "We are witnessing the technological convergence of mobile phones and advanced computing."
+                ]
+            }
+        ];
+
+        // --- 2. 状態管理 (State) ---
+        let currentIndex = 0;
+        let history = JSON.parse(localStorage.getItem('vocab_history')) || [];
+        let isAiLoadedForCurrentWord = false;
+
+        // --- 3. DOM要素の取得 ---
+        const card = document.getElementById('card');
+        const wordTitle = document.getElementById('wordTitle');
+        const wordPhonetic = document.getElementById('wordPhonetic');
+        const wordMeaning = document.getElementById('wordMeaning');
+        const wordExample = document.getElementById('wordExample');
+        const wordIndex = document.getElementById('wordIndex');
+        const aiSection = document.getElementById('aiSection');
+        const aiExample = document.getElementById('aiExample');
+        const aiBtn = document.getElementById('aiBtn');
+        const aiBtnText = document.getElementById('aiBtnText');
+        const dotsContainer = document.getElementById('dots');
+        const historySheet = document.getElementById('historySheet');
+        const sheetContent = document.getElementById('sheetContent');
+        const historyList = document.getElementById('historyList');
+
+        // --- 4. 描画・UI更新関数 (Render) ---
+        function updateCard() {
+            const current = wordData[currentIndex];
+            
+            // フェードアウト効果
+            card.style.opacity = 0;
+            card.style.transform = 'scale(0.98)';
+            
+            setTimeout(() => {
+                wordTitle.textContent = current.word;
+                wordPhonetic.textContent = current.phonetic;
+                wordMeaning.textContent = current.meaning;
+                wordExample.textContent = `"${current.example}"`;
+                wordIndex.textContent = `${currentIndex + 1} / ${wordData.length}`;
+                
+                // AI連携状態のリセット
+                isAiLoadedForCurrentWord = false;
+                aiSection.classList.add('hidden');
+                aiBtnText.textContent = "AIに新しい例文を頼む";
+                aiBtn.disabled = false;
+                aiBtn.style.opacity = "1";
+
+                // インジケーターの更新
+                updateDots();
+                // 履歴に追加
+                addToHistory(current.word);
+
+                // フェードイン
+                card.style.opacity = 1;
+                card.style.transform = 'scale(1) translateX(0)';
+            }, 200);
+        }
+
+        function updateDots() {
+            dotsContainer.innerHTML = '';
+            wordData.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = `h-1.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-6 bg-zinc-800 dark:bg-white' : 'w-1.5 bg-zinc-300 dark:bg-zinc-700'}`;
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // --- 5. インタラクション・機能 (Actions) ---
+        
+        // タッチ・スライド操作 (Mobile Swipe Handler)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        card.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        card.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50; // スワイプを認識する最小距離
+            if (touchStartX - touchEndX > swipeThreshold) {
+                // 左スワイプ -> 次のカードへ
+                if (currentIndex < wordData.length - 1) {
+                    currentIndex++;
+                    updateCard();
+                } else {
+                    // バウンスアニメーション（最後のカード）
+                    card.style.transform = 'translateX(-20px)';
+                    setTimeout(() => card.style.transform = 'translateX(0)', 200);
+                }
+            } else if (touchEndX - touchStartX > swipeThreshold) {
+                // 右スワイプ -> 前のカードへ
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCard();
+                } else {
+                    // バウンスアニメーション（最初のカード）
+                    card.style.transform = 'translateX(20px)';
+                    setTimeout(() => card.style.transform = 'translateX(0)', 200);
+                }
+            }
+        }
+
+        // AI連携模擬機能 (AI Simulation)
+        aiBtn.addEventListener('click', () => {
+            if (isAiLoadedForCurrentWord) return;
+            
+            aiBtnText.textContent = "AIが思考中...";
+            aiBtn.disabled = true;
+            aiBtn.style.opacity = "0.6";
+
+            // 擬似的なネットワーク遅延を表現
+            setTimeout(() => {
+                const current = wordData[currentIndex];
+                const randomAiExample = current.aiPool[Math.floor(Math.random() * current.aiPool.length)];
+                
+                aiExample.textContent = `"${randomAiExample}"`;
+                aiSection.classList.remove('hidden');
+                aiBtnText.textContent = "新しい例文を生成しました";
+                isAiLoadedForCurrentWord = true;
+                lucide.createIcons(); // アイコンの再描画
+            }, 800);
+        });
+
+        // 履歴管理 (History Management)
+        function addToHistory(word) {
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // 重複排除
+            history = history.filter(item => item.word !== word);
+            history.unshift({ word, time: timestamp });
+            if (history.length > 20) history.pop(); // 上限20件
+            localStorage.setItem('vocab_history', JSON.stringify(history));
+        }
+
+        function renderHistoryList() {
+            historyList.innerHTML = '';
+            if (history.length === 0) {
+                historyList.innerHTML = `<p class="text-sm text-zinc-400 text-center py-8">履歴がありません</p>`;
+                return;
+            }
+            history.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl";
+                div.innerHTML = `
+                    <span class="font-medium text-sm tracking-tight">${item.word}</span>
+                    <span class="text-xs text-zinc-400 font-mono">${item.time}</span>
+                `;
+                historyList.appendChild(div);
+            });
+        }
+
+        // モーダル・シートの開閉
+        const historyBtn = document.getElementById('historyBtn');
+        const closeHistory = document.getElementById('closeHistory');
+        const clearHistory = document.getElementById('clearHistory');
+
+        function toggleHistorySheet(show) {
+            if (show) {
+                renderHistoryList();
+                historySheet.classList.remove('hidden');
+                setTimeout(() => {
+                    historySheet.classList.add('opacity-100');
+                    sheetContent.classList.remove('translate-y-full');
+                }, 10);
+            } else {
+                historySheet.classList.remove('opacity-100');
+                sheetContent.classList.add('translate-y-full');
+                setTimeout(() => historySheet.classList.add('hidden'), 300);
+            }
+        }
+
+        historyBtn.addEventListener('click', () => toggleHistorySheet(true));
+        closeHistory.addEventListener('click', () => toggleHistorySheet(false));
+        historySheet.addEventListener('click', (e) => {
+            if (e.target === historySheet) toggleHistorySheet(false);
+        });
+
+        clearHistory.addEventListener('click', () => {
+            history = [];
+            localStorage.removeItem('vocab_history');
+            renderHistoryList();
+        });
+
+        // --- 6. テーマ切り替え (Dark Mode) ---
+        const themeToggle = document.getElementById('themeToggle');
+        
+        // 初期テーマ設定 (システム設定または保存された設定)
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
+
+        // --- 7. 初期化 ---
+        lucide.createIcons();
+        updateCard();
+    </script>
+</body>
+</html>
