@@ -8,10 +8,6 @@ EXEC_TIME="1s"
 BASE_DIR="c/.tls"
 
 
-if ! [ "$#" -eq 2 ]; then
-    echo "USAGE: <THIS_SHELL_SCRIPT> <PROBLEM_ID> <CODE_FILE_PATH>" 1>&2
-    exit
-fi
 PROBLEM_ID="$1"
 FILE_PATH="$2" # absolute path
 FILE_NAME=$(basename "${FILE_PATH}")

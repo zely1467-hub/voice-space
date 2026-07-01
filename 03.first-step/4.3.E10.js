@@ -3,6 +3,11 @@ const Lib = require(require("os").homedir() + "/c/lib.js");
 {
     Lib.print("Input the word including ( and ) : ");
     let a = Lib.input();
-    Lib.print("---\n");
     
-}
+    Lib.print("---\n");
+    let length = Lib.length(a);
+    Lib.slice();
+    Lib.indexOf(a, "(");
+    Lib.print("\n");
+    Lib.indexOf(a, ")");
+} 

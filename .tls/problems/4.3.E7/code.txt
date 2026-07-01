@@ -6,5 +6,4 @@ const Lib = require(require("os").homedir() + "/c/lib.js");
     Lib.print("---\n");
     Lib.print(Lib.slice(a, 3, 7));
     Lib.print("\n");     
-
 }
