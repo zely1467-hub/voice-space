@@ -1,0 +1,4 @@
+Input CSV data: ---
+apple
+120
+12

@@ -1,0 +1,6 @@
+3個: ***
+5個: *****
+1個: *
+0個: 
+--- Verification by the evaluation system
+**********

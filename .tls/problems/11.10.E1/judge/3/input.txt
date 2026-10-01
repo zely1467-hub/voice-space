@@ -1,0 +1,1 @@
+{"student_id": 249003, "japanese": 90, "math": 95, "english": 85}

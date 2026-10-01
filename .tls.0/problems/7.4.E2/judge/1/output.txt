@@ -1,0 +1,5 @@
+Input the number: ---
+6
+5
+4
+3

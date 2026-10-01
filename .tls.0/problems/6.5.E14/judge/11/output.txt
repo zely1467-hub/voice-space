@@ -1,0 +1,2 @@
+Input absence (a): Input tardiness (b): ---
+5

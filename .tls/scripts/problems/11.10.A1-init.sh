@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+
+PROBLEM_ID="11.10.A1"
+
+
+BASE_DIR="c/.tls"
+WORKING_DIR="${BASE_DIR}/problems/${PROBLEM_ID}"
+rm -rf ~/"${WORKING_DIR}"
+mkdir -p ~/"${WORKING_DIR}"
+CASE_NUMBER=0
+
+
+CASE_NUMBER=$((${CASE_NUMBER} + 1))
+JUDGE_DIR="${WORKING_DIR}/judge/${CASE_NUMBER}"
+mkdir -p ~/"${JUDGE_DIR}"
+cat << "EOF" > ~/"${JUDGE_DIR}/input.txt"
+[{"user_id":1,"following":[3,9]},{"user_id":2,"following":[4,5]},{"user_id":3,"following":[2,4]},{"user_id":4,"following":[3,8,10]},{"user_id":5,"following":[7,8,9,10]},{"user_id":6,"following":[3]},{"user_id":7,"following":[1,6,8]},{"user_id":8,"following":[1,2,4,5,9]},{"user_id":9,"following":[]},{"user_id":10,"following":[1,4]}]
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/expected-output.txt"
+---
+4
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/transform.js"
+"use strict";
+const transform = (code) => {return code;};
+const fs = require('fs');
+if (process.argv.length < 2) { process.exit(1); }
+const codeFilename = process.argv[2];
+const transformed = transform(fs.readFileSync(codeFilename, "utf8"));
+process.stdout.write(transformed);
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/verify.js"
+"use strict";
+const verify = (output) => {return output.trimEnd().match(/---\n4\s*$/);};
+const fs = require('fs');
+const result = verify(fs.readFileSync("output.txt", "utf8"));
+if (result) {
+    process.stdout.write("1\n");
+} else {
+    process.stdout.write("0\n");
+}
+EOF
+
+
+CASE_NUMBER=$((${CASE_NUMBER} + 1))
+JUDGE_DIR="${WORKING_DIR}/judge/${CASE_NUMBER}"
+mkdir -p ~/"${JUDGE_DIR}"
+cat << "EOF" > ~/"${JUDGE_DIR}/input.txt"
+[{"user_id":1,"following":[4,6,7,9,10,11,19,21,23,25]},{"user_id":2,"following":[1,4,14,15,17,19,20,23,24]},{"user_id":3,"following":[2,7,10,11,13,19,22,25,29]},{"user_id":4,"following":[6,13,17,19,21,25,26,29,30]},{"user_id":5,"following":[3,7,13,14,21,23,28]},{"user_id":6,"following":[2,3,4,8,10,11,12,14,20,23,26,27,30]},{"user_id":7,"following":[2,11,14,17,18,19,23,26,27,28]},{"user_id":8,"following":[1,2,3,5,10,14,16,17,18,22,23,26,29,30]},{"user_id":9,"following":[1,3,4,5,8,10,15,19,20,23,27,28,29]},{"user_id":10,"following":[4,8,9,12,15,17,20,21,24,30]},{"user_id":11,"following":[2,5,8,9,12,15,18,19,20,26]},{"user_id":12,"following":[5,8,17,18,23,28,29,30]},{"user_id":13,"following":[3,5,7,10,11,24,26,28,30]},{"user_id":14,"following":[1,4,5,6,10,11,15,22,24,27]},{"user_id":15,"following":[1,2,7,9,12,13,14,16,18,25,27,28,29]},{"user_id":16,"following":[2,3,7,11,17,20,27]},{"user_id":17,"following":[1,2,3,9,10,11,20,23,26,27,29]},{"user_id":18,"following":[1,2,3,5,7,9,17,19,20,22,24,28]},{"user_id":19,"following":[3,4,9,13,16,22,23,25]},{"user_id":20,"following":[2,5,11,12,13,14,18,21,25]},{"user_id":21,"following":[1,2,3,5,6,7,8,9,13,14,16,18,20,22,24,28,29,30]},{"user_id":22,"following":[1,2,6,11,16,21,23,24,26,29]},{"user_id":23,"following":[1,6,7,8,9,19,24,26,27]},{"user_id":24,"following":[1,3,4,6,10,15,16,20,22,26,27]},{"user_id":25,"following":[1,3,4,13,16,18,20,22,23,28,30]},{"user_id":26,"following":[4,6,8,9,12,15,19,22,25,27,29]},{"user_id":27,"following":[1,6,7,14,16,17,18,26,28,30]},{"user_id":28,"following":[2,4,7,8,10,15,17,23]},{"user_id":29,"following":[1,2,3,4,5,7,8,14,16,23,25,27]},{"user_id":30,"following":[1,3,5,9,10,12,19,20,21,22,23,27]}]
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/expected-output.txt"
+---
+1
+23
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/transform.js"
+"use strict";
+const transform = (code) => {return code;};
+const fs = require('fs');
+if (process.argv.length < 2) { process.exit(1); }
+const codeFilename = process.argv[2];
+const transformed = transform(fs.readFileSync(codeFilename, "utf8"));
+process.stdout.write(transformed);
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/verify.js"
+"use strict";
+const verify = (output) => {return output.trimEnd().match(/---\n1\n23\s*$/);};
+const fs = require('fs');
+const result = verify(fs.readFileSync("output.txt", "utf8"));
+if (result) {
+    process.stdout.write("1\n");
+} else {
+    process.stdout.write("0\n");
+}
+EOF
+
+
+CASE_NUMBER=$((${CASE_NUMBER} + 1))
+JUDGE_DIR="${WORKING_DIR}/judge/${CASE_NUMBER}"
+mkdir -p ~/"${JUDGE_DIR}"
+cat << "EOF" > ~/"${JUDGE_DIR}/input.txt"
+[{"user_id":1,"following":[4,7,14,20,23,24,26,27,44]},{"user_id":2,"following":[3,6,16,17,19,21,23,25,29,31,38,43,46,49]},{"user_id":3,"following":[2,4,6,8,14,16,18,20,22,24,25,26,30,42,43,48,49]},{"user_id":4,"following":[1,2,8,11,15,37,43,45,46,47,49]},{"user_id":5,"following":[1,3,7,15,22,25,27,29,35,44,46]},{"user_id":6,"following":[1,9,11,19,22,23,25,27,28,35,37,38,39,41,46,47,49]},{"user_id":7,"following":[3,4,9,13,15,24,26,27,29,33,34,35,38,41,42,43,47,48,49]},{"user_id":8,"following":[7,13,18,20,26,27,33,38,46,47,50]},{"user_id":9,"following":[2,5,6,13,17,19,21,26,28,30,31,36,37,41,42,45,49]},{"user_id":10,"following":[3,5,6,11,13,22,25,27,29,34,37,38,44,45,49]},{"user_id":11,"following":[3,5,10,12,19,22,24,25,26,30,33,35,39,41,43,45,46]},{"user_id":12,"following":[3,8,13,15,18,22,24,25,26,28,30,34,39,40,43,49,50]},{"user_id":13,"following":[2,7,8,9,10,14,18,20,22,25,28,31,35,46,48,50]},{"user_id":14,"following":[4,6,7,8,9,10,13,17,19,26,27,28,30,32,33,34,38,41,46,49]},{"user_id":15,"following":[1,2,3,10,11,12,17,22,23,26,28,30,32,39,47,50]},{"user_id":16,"following":[2,5,8,17,18,21,22,28,30,33,35,38,43,45,48]},{"user_id":17,"following":[2,4,5,6,8,10,12,13,16,21,22,24,28,38,41,45]},{"user_id":18,"following":[7,11,13,17,19,20,25,27,28,29,31,34,36,40,41,45,47,48,49]},{"user_id":19,"following":[2,3,4,9,11,14,15,26,28,42,43,46,50]},{"user_id":20,"following":[1,2,7,8,9,10,11,16,18,22,23,28,29,32,37,40,42,47,48,49]},{"user_id":21,"following":[1,3,5,6,7,8,9,18,19,24,26,32,37,40,41,46,49]},{"user_id":22,"following":[2,4,5,7,8,13,14,15,16,18,19,28,29,32,33,35,38,39,40,41,45]},{"user_id":23,"following":[1,2,3,5,11,12,13,14,17,20,21,32,34,35,38,42,44,48]},{"user_id":24,"following":[1,2,7,8,10,13,16,17,31,38,39,48,50]},{"user_id":25,"following":[4,5,7,8,10,15,20,24,32,36,38,39,42,43,44,46,50]},{"user_id":26,"following":[1,4,6,10,14,15,16,17,18,20,22,24,28,31,32,35,37,48]},{"user_id":27,"following":[7,9,11,12,16,17,18,20,23,25,35,40,42,45,46,47]},{"user_id":28,"following":[5,6,13,15,17,19,23,24,25,27,33,37,38,40,41,50]},{"user_id":29,"following":[2,3,5,8,12,15,18,23,37,41,45,50]},{"user_id":30,"following":[6,8,9,10,11,14,17,18,21,27,29,32,33,34,35,39,41,42,43,46]},{"user_id":31,"following":[4,5,8,10,13,16,17,19,20,21,22,29,37,42,49,50]},{"user_id":32,"following":[1,2,7,8,17,19,26,29,31,34,36,37,40,41,42,46,47,49,50]},{"user_id":33,"following":[1,8,10,11,17,20,29,30,39,40,43,47]},{"user_id":34,"following":[1,6,7,9,27,31,33,36,41,42,47]},{"user_id":35,"following":[1,2,3,8,9,18,24,27,30,34,38,46,47,50]},{"user_id":36,"following":[1,5,6,7,10,12,13,16,17,20,24,27,30,31,39,40,42,45,47,48]},{"user_id":37,"following":[4,6,7,9,15,23,24,25,26,28,31,32,40,41,45,46,49]},{"user_id":38,"following":[1,2,4,5,9,11,14,16,22,29,30,31,33,36,39,44,50]},{"user_id":39,"following":[3,5,6,9,12,19,22,25,26,28,30,36,38,43,50]},{"user_id":40,"following":[1,2,7,8,11,12,15,16,17,18,19,29,35,43,47,48]},{"user_id":41,"following":[2,4,7,11,14,16,19,24,25,26,27,28,33,34,36,43]},{"user_id":42,"following":[1,2,5,9,18,20,21,24,27,29,32,33,34,36,37,39,49,50]},{"user_id":43,"following":[1,4,5,6,7,9,25,30,32,34,37,44,45,48,49]},{"user_id":44,"following":[3,4,12,14,17,19,23,27,30,33,35,36,39,42,48,49]},{"user_id":45,"following":[3,4,10,11,15,17,18,20,23,24,32,34,41,43,44]},{"user_id":46,"following":[1,4,6,7,8,9,10,11,12,14,18,20,23,32,35,37,38,40]},{"user_id":47,"following":[4,5,9,10,12,15,16,17,19,24,25,26,27,29,30,35,36,37,39,40,41,42,45]},{"user_id":48,"following":[3,5,6,8,9,10,12,13,14,19,20,21,28,33,35,36,37,42,49]},{"user_id":49,"following":[4,7,10,13,14,16,17,21,24,25,31,38,42,43]},{"user_id":50,"following":[1,2,4,8,10,11,13,14,16,19,20,26,31,33,36,37,39,43,47]}]
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/expected-output.txt"
+---
+8
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/transform.js"
+"use strict";
+const transform = (code) => {return code;};
+const fs = require('fs');
+if (process.argv.length < 2) { process.exit(1); }
+const codeFilename = process.argv[2];
+const transformed = transform(fs.readFileSync(codeFilename, "utf8"));
+process.stdout.write(transformed);
+EOF
+cat << "EOF" > ~/"${JUDGE_DIR}/verify.js"
+"use strict";
+const verify = (output) => {return output.trimEnd().match(/---\n8\s*$/);};
+const fs = require('fs');
+const result = verify(fs.readFileSync("output.txt", "utf8"));
+if (result) {
+    process.stdout.write("1\n");
+} else {
+    process.stdout.write("0\n");
+}
+EOF

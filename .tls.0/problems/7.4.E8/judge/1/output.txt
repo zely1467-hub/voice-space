@@ -1,0 +1,5 @@
+Input the number: ---
+1
+2
+6
+24

@@ -1,0 +1,28 @@
+PIN
+Personal Identification Number
+SONAR
+Sound Navigation and Ranging
+NASA
+National Aeronautics and Space Administration
+RADAR
+Radio Detection and Ranging
+UNICEF
+United Nations International Children’s Emergency Fund
+UNESCO
+United Nations Educational, Scientific and Cultural Organisation
+CAPTCHA
+Completely Automated Public Turing test to tell Computers and Humans Apart
+LASER
+Light amplification by stimulated emission of radiation
+WiFi
+Wireless Fidelity
+LAN
+Local Area Network
+FIFA
+Federation Internationale de Football Association
+TOEFL
+Test of English as a Foreign Language
+IELTS
+International English Language Testing System
+
+FIFA

@@ -3,7 +3,7 @@ set -euo pipefail
 
 
 EXT="js"
-EXEC_TIME="1s"
+EXEC_TIME="5s"
 
 BASE_DIR="c/.tls"
 

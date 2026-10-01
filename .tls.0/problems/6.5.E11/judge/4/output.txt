@@ -1,0 +1,2 @@
+Input the string: ---
+Tokyo Doitsu Mura

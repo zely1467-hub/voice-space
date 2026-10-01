@@ -1,0 +1,2 @@
+Input the number: Input the number: Input the number: ---
+8 8 9

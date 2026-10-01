@@ -1,17 +1,20 @@
-'use strict';
+"use strict";
 const Lib = require(require("os").homedir() + "/c/lib.js");
+
 {
-    let a = Number(Lib.input());
-    let b = Number(Lib.input());
+    let a = Number(Lib.input()); 
+    let b = Number(Lib.input()); 
+
     Lib.print("---\n");
-    let s = 1;
-    while (s <= b) {
-        let cnt = 0;
-        while (cnt < a) {
+
+    let y = 0;
+    while (y < b) {
+        let x = 0;
+        while (x < a) {
             Lib.print("O");
-            cnt = cnt + 1;
+            x = x + 1;
         }
         Lib.print("\n");
-        s = s + 1;
+        y = y + 1;
     }
 }

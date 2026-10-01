@@ -1,2 +1,0 @@
-2
-', (code)=>code, (result)=>{ return result.trimEnd().match(); }],

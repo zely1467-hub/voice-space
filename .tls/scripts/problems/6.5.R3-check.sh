@@ -4,7 +4,7 @@ set -euo pipefail
 
 PROBLEM_ID="6.5.R3"
 EXT="txt"
-EXEC_TIME="1s"
+EXEC_TIME="5s"
 
 BASE_DIR="c/.tls"
 

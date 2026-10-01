@@ -1,0 +1,4 @@
+Input the number Alice studied: ---
+2
+46
+40

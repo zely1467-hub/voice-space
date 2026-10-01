@@ -1,0 +1,2 @@
+Input the number: Input the number: Input the number: ---
+10 10 11

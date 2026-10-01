@@ -1,0 +1,3 @@
+Lib.print("--- Verification by the evaluation system\n");
+Lib.print(scale([2, 3, 4], 3));
+Lib.print("\n");

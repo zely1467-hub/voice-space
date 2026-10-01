@@ -1,0 +1,2 @@
+Input the string: ---
+Universal Studio Japan
